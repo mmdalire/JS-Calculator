@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+/*Background image*/
+body {
+    background: url('images/coding.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow-y: hidden;
+}
+
+/*Background image owner*/
+header {
+    padding: 10px;
+    color: black;
+    background-color: white;
+    width: 250px;
+    opacity: 0.7;
+}
+
+h3 {
+    font-size: 16px;
+    color: white;
+}
+
+p {
+    margin: 10px auto;
+}
+
+/*Logo*/
+#logo {
+    width: 80px;
+    margin-right: 20px;
+    font-size: 90px;
+    color: 	rgb(204,204,0);
+}
+
+.container {
+    width: 700px;
+    height: 500px;
+    background-color: rgb(180, 180, 180);
+    box-shadow: 15px 13px 5px 0px rgba(71, 71, 71, 0.75); 
+    margin: 0 auto;
+    padding: 10px 10px 20px 10px;
+}
+
+/*Header part*/
+.container__header {
+    display: flex;
+}
+
+.container__title {
+    margin-top: 5px;
+}
+
+/*Calculator part*/
+.container__calculator-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    width: 40%;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.calculator-container--grid {
+    text-align: center;
+    line-height: 2;
+    font-size: 30px;
+    background-color: #1C1C1C;
+    color: white;
+    cursor: pointer;
+    border: transparent;
+    transition: 0.5s all;
+    outline: none;
+}
+
+/*Colors*/
+.calculator-container--grid:not(:first-child):hover {
+    background-color: white;
+    color: #1C1C1C;
+}
+
+#ac, #positive-negative, #percent {
+    background-color: #D4D4D2;
+}
+
+#ac:hover, #positive-negative:hover, #percent:hover {
+    color: #D4D4D2;
+    background-color: white;
+}
+
+#divide, #multiply, #subtract, #add, #equals {
+    background-color: #FF9500;
+}
+
+#divide:hover, #multiply:hover, #subtract:hover, #add:hover, #equals:hover {
+    color: #FF9500;
+    background-color: white;
+}
+
+/*Changes in sizes*/
+#display-text {
+    padding-right: 10px;
+    font-size: 50px;
+    grid-column: 1 / 5;
+    cursor: initial;
+    text-align: right;
+}
+
+#_0 {
+    grid-column: 1 / 3;
+}
