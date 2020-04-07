@@ -27,7 +27,7 @@ header {
 
 h3 {
     font-size: 16px;
-    color: white;
+    color: black;
 }
 
 p {
@@ -106,6 +106,12 @@ p {
     background-color: white;
 }
 
+#divide:focus, #multiply:focus, #subtract:focus, #add:focus {
+    color: #FF9500;
+    background-color: white;
+}
+
+
 /*Changes in sizes*/
 #display-text {
     padding-right: 10px;
@@ -113,6 +119,7 @@ p {
     grid-column: 1 / 5;
     cursor: initial;
     text-align: right;
+    overflow: hidden;
 }
 
 #_0 {
