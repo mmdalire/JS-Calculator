@@ -1,124 +1,118 @@
-//Number array
-const numbers = [
-    document.getElementById('_0'),
-    document.getElementById('_1'),
-    document.getElementById('_2'),
-    document.getElementById('_3'),
-    document.getElementById('_4'),
-    document.getElementById('_5'),
-    document.getElementById('_6'),
-    document.getElementById('_7'),
-    document.getElementById('_8'),
-    document.getElementById('_9')
-];
+const numbers = document.querySelectorAll('[data-number]');
+const operations = document.querySelectorAll('[data-operation]');
+const clear = document.querySelector('[data-clear]');
+const clearAll = document.querySelector('[data-clear-all]');
+let display = document.querySelector('.calculator-container__display');
+const maximumDigits = 10;
 
-//Operations
-const add = document.getElementById('add');
-const subtract = document.getElementById('subtract');
-const multiply = document.getElementById('multiply');
-const divide = document.getElementById('divide');
-const percent = document.getElementById('percent');
-const positiveNegative = document.getElementById('positive-negative');
-const decimal = document.getElementById('decimal');
-const clearAll = document.getElementById('ac');
-let displayCalculator = document.getElementById('display-text');
+let previousNumber, currentNumber;
+let previousSign;
 
-const maxNumberDigit = 10; //Maximum digits in calculator to be placed
-let totalCounter = 0; //Total counter for number manipulation
-let operation; //Check what operation is currently performing
-let repeatOperation = false;
-let isFirstNumber = true;
-let doneOperation = false;
-
-//Functions
-//Enter numbers (mouse)
-const enterMouseNumbers = (numericKeypad, number) => {
-    numericKeypad[number].addEventListener('click', e => {
-        //Executes if the operation is done performing to clear the screen to enter another number
-        if(doneOperation === true) {
-            displayCalculator.textContent = '0';
-            doneOperation = false;
+const appendNumbers = number => {
+    //When the calculator is starting up
+    if(currentNumber === undefined) {
+        //When the decimal point is clicked first
+        if(display.textContent === '0' && number === '.') {
+            currentNumber = '0.';
+            return;
         }
-        
-        if(isFirstNumber === false) {
-            displayCalculator.textContent = '0';
-            isFirstNumber = true;
-        }
-
-        //Replace number if the screen displays ONLY 0
-        if(displayCalculator.textContent === '0') {
-            displayCalculator.textContent = number;
-        }
-        else {
-            if(displayCalculator.textContent.length < maxNumberDigit) {
-                displayCalculator.textContent += number;
-            } 
-        }
-    });
-}
-
-//Clear a number 
-const clearNumbers = e => {
-    if(e.key === 'Backspace') {
-        //Clears the last number placed
-        if(displayCalculator.textContent.length > 1) {
-            let removedNumberDisplay = displayCalculator.textContent.substring(0, displayCalculator.textContent.length - 1);
-            displayCalculator.textContent = removedNumberDisplay;
-        }
-        //Replaces 0 if no numbers to clear
-        else {
-            displayCalculator.textContent = 0;
-        }
-    }
-}
-
-//Add a number
-const addNumbers = () => {
-    //Avoid placing the same operation twice
-    if(doneOperation === true) {
+        //When a number is clicked first
+        currentNumber = number;
+        currentNumber = parseFloat(currentNumber);
         return;
     }
+    //When a number in currentNumber exists
+    currentNumber += number;
+}
 
-    //First input of number
-    if(isFirstNumber === true) {
-        operation = '+';
-        isFirstNumber = false;
-        totalCounter += parseInt(displayCalculator.textContent);
-        displayCalculator.textContent = totalCounter;
+const placeNumbers = number => {
+    let numDigit = number.textContent;
+    if(display.textContent.length >= maximumDigits) return;  //When the calculator reaches its maximum digit display
+    if(numDigit === '.' && display.textContent.includes('.')) return; //Avoiding placing of two or more decimal places
+    appendNumbers(numDigit);
+}
+
+const clearDigit = () => {
+    if(currentNumber === undefined) return;
+    
+    currentNumber = currentNumber.toString().slice(0, -1);
+    if(currentNumber === '') {
+        currentNumber = undefined;
+        display.textContent = '0';
     }
-    else {
-        totalCounter += parseInt(displayCalculator.textContent);
-        displayCalculator.textContent = totalCounter;
-        doneOperation = true;
+}
+
+const clearAllDigits = () => {
+    previousNumber = undefined;
+    currentNumber = undefined;
+    previousSign = undefined;
+    display.textContent = '0';
+}
+
+const calculation = operationSign => {
+    let calculated;
+    operationSign = operationSign.textContent;
+    currentNumber = parseFloat(currentNumber);
+
+    if(operationSign === '=' && previousNumber === undefined) return;
+    if(previousNumber === undefined) {
+        previousNumber = currentNumber;
+        currentNumber = undefined;
+        previousSign = operationSign;
+        return;
     }
+    if(previousNumber !== undefined && currentNumber !== undefined && operationSign === '=') {
+        switch(previousSign) {
+            case '+':
+                calculated = previousNumber + currentNumber;
+                break;
+            case '-':
+                calculated = previousNumber - currentNumber;
+                break;
+            case '×':
+                calculated = previousNumber * currentNumber;
+                break;
+            case '÷':
+                calculated = previousNumber / currentNumber;
+                break;
+            default:
+                return;
+        }
+        currentNumber = calculated;
+        updateDisplay();
+        currentNumber = undefined;
+    }
+
 }
 
-//Clear all numbers
-const clearAllNumbers = () => {
-    //Reset everything
-    displayCalculator.textContent = 0;
-    totalCounter = 0;
-    operation = undefined;
-    isFirstNumber = true;
+const updateDisplay = () => {
+    if(display.textContent.length >= maximumDigits) return;
+    if(currentNumber === undefined) return;
+    display.textContent = currentNumber.toString(); //Displays the current number into the calculator
 }
 
-//Event listeners
-//Place numbers in display
-for(let i = 0; i < numbers.length; i++) {
-    enterMouseNumbers(numbers, i);
-}
-
-//Clear a number in display
-window.addEventListener('keydown', e => {
-    clearNumbers(e);
-})
-
-//Clear all numbers in dislay 
-clearAll.addEventListener('click', e => {
-    clearAllNumbers();
+//Entering of numbers
+numbers.forEach(numBtn => {
+    numBtn.addEventListener('click', e => {
+        placeNumbers(numBtn);
+        updateDisplay();
+    });
 });
 
-//Add numbers
-add.addEventListener('click', e => {
-    addNumbers();
+//Clearing of a digit
+clear.addEventListener('click', e => {
+    clearDigit();
+    updateDisplay();
+});
+
+//Clearing all of digit
+clearAll.addEventListener('click', e => {
+    clearAllDigits();
+    updateDisplay();
+})
+
+operations.forEach(operationBtn => {
+    operationBtn.addEventListener('click', e => {
+        calculation(operationBtn);
+    });
 });
