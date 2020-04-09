@@ -1,12 +1,14 @@
 const numbers = document.querySelectorAll('[data-number]');
 const operations = document.querySelectorAll('[data-operation]');
+//const equals = document.querySelector('[data-equals');
 const clear = document.querySelector('[data-clear]');
 const clearAll = document.querySelector('[data-clear-all]');
 let display = document.querySelector('.calculator-container__display');
 const maximumDigits = 10;
 
 let previousNumber, currentNumber;
-let previousSign;
+let previousOperator ,currentOperator;
+let equalPressed = false;
 
 const appendNumbers = number => {
     //When the calculator is starting up
@@ -18,7 +20,6 @@ const appendNumbers = number => {
         }
         //When a number is clicked first
         currentNumber = number;
-        currentNumber = parseFloat(currentNumber);
         return;
     }
     //When a number in currentNumber exists
@@ -49,40 +50,45 @@ const clearAllDigits = () => {
     display.textContent = '0';
 }
 
-const calculation = operationSign => {
-    let calculated;
-    operationSign = operationSign.textContent;
-    currentNumber = parseFloat(currentNumber);
-
-    if(operationSign === '=' && previousNumber === undefined) return;
+const chooseOperation = operationSign => {
+    if(currentNumber === undefined) return;
     if(previousNumber === undefined) {
+        previousOperator = operationSign;
         previousNumber = currentNumber;
         currentNumber = undefined;
-        previousSign = operationSign;
+        return;
+    } 
+    else {
+        currentOperator = operationSign;
+        calculation();
         return;
     }
-    if(previousNumber !== undefined && currentNumber !== undefined && operationSign === '=') {
-        switch(previousSign) {
-            case '+':
-                calculated = previousNumber + currentNumber;
-                break;
-            case '-':
-                calculated = previousNumber - currentNumber;
-                break;
-            case '×':
-                calculated = previousNumber * currentNumber;
-                break;
-            case '÷':
-                calculated = previousNumber / currentNumber;
-                break;
-            default:
-                return;
-        }
-        currentNumber = calculated;
-        updateDisplay();
-        currentNumber = undefined;
-    }
+}
 
+const calculation = () => {
+    let calculatedValue;
+
+    switch(previousOperator || currentOperator) {
+        case '+':
+            calculatedValue = parseFloat(previousNumber) + parseFloat(currentNumber);
+            break;
+        case '-':
+            calculatedValue = parseFloat(previousNumber) - parseFloat(currentNumber);
+            break;
+        case '×':
+            calculatedValue = parseFloat(previousNumber) * parseFloat(currentNumber);
+            break;
+        case '÷':
+            calculatedValue = parseFloat(previousNumber) / parseFloat(currentNumber);
+            break;
+        default:
+            return;
+    }
+    previousOperator = currentOperator;
+    previousNumber = calculatedValue;
+    currentNumber = calculatedValue;
+    updateDisplay();
+    currentNumber = undefined;
 }
 
 const updateDisplay = () => {
@@ -113,6 +119,11 @@ clearAll.addEventListener('click', e => {
 
 operations.forEach(operationBtn => {
     operationBtn.addEventListener('click', e => {
-        calculation(operationBtn);
+        chooseOperation(operationBtn.textContent);
     });
 });
+
+/*equals.addEventListener('click', e => {
+    equalPressed = true;
+    calculation();
+});*/
