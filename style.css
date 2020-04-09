@@ -91,6 +91,7 @@ button {
     grid-column: 1/5;
     text-align: right;
     padding-right: 10px;
+    overflow: hidden;
 }
 
 button:nth-child(18) {
@@ -105,20 +106,21 @@ button:hover {
 button[data-operation], 
 button[data-clear-all],
 button[data-clear],
-button[data-equals] {
+button[data-equals],
+button[data-positive-negative] {
     background-color: orange;
 }
 
 button[data-operation]:hover, 
 button[data-clear-all]:hover, 
 button[data-clear]:hover,
-button[data-equals]:hover {
+button[data-equals]:hover,
+button[data-positive-negative]:hover {
     color: orange;
     background-color: white;
 }
 
-button[data-operation]:focus, 
-button[data-clear]:focus {
+button[data-operation]:focus {
     color: orange;
     background-color: white;
 }
